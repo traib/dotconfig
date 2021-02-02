@@ -1,0 +1,65 @@
+{
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.cursorBlinking": "solid",
+    "editor.fontFamily": "Inconsolata, Consolas, monospace",
+    "editor.formatOnSave": true,
+    "editor.matchBrackets": "near",
+    "files.eol": "\n",
+    "json.schemaDownload.enable": false,
+    "npm.fetchOnlinePackageInfo": false,
+    "python.experiments.enabled": false,
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": [
+        "--style={based_on_style: google, dedent_closing_brackets: true}"
+    ],
+    "python.linting.pylintArgs": [
+        "--disable=unsubscriptable-object,missing-docstring,redefined-outer-name"
+    ],
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    "terminal.integrated.showExitAlert": false,
+    "typescript.disableAutomaticTypeAcquisition": true,
+    "vim.changeWordIncludesWhitespace": true,
+    "vim.highlightedyank.enable": true,
+    "vim.hlsearch": true,
+    "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "u"
+            ],
+            "commands": [
+                "undo"
+            ]
+        },
+        {
+            "before": [
+                "<C-r>"
+            ],
+            "commands": [
+                "redo"
+            ]
+        },
+        {
+            "before": [
+                "<C-l>"
+            ],
+            "commands": [
+                ":nohl",
+            ]
+        },
+    ],
+    "vim.visualstar": true,
+    "vim.wrapscan": false,
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.enableExperiments": false,
+    "workbench.settings.enableNaturalLanguageSearch": false,
+    "workbench.sideBar.location": "right",
+    "workbench.startupEditor": "none",
+}

@@ -27,6 +27,16 @@ class Category(Enum):
     def __init__(self, locations: List[Location]):
         self.locations = locations
 
+    VSCODE = [
+        Location(
+            # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
+            save='Code/User/settings.json',
+            linux='$HOME/.config/Code/User/settings.json',
+            darwin='$HOME/Library/Application Support/Code/User/settings.json',
+            windows='%APPDATA%/Code/User/settings.json'
+        ),
+    ]
+
 
 if __name__ == '__main__':
     import argparse
