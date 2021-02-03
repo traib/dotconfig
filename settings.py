@@ -2,8 +2,11 @@ import dataclasses
 import enum
 import os
 import platform
-import typing
-from typing import List, Optional
+import shutil
+import sys
+from typing import NamedTuple, Optional
+
+assert sys.version_info >= (3, 9)
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -15,23 +18,41 @@ class Location:
     darwin: Optional[str] = None
     windows: Optional[str] = None
 
-    def inside_repo(self) -> os.PathLike:
+    def inside_repository(self) -> os.PathLike:
+        assert self.save != ''
         return os.path.join(SCRIPT_DIR, self.save)
 
-    def outside_repo(self) -> Optional[os.PathLike]:
+    def outside_repository(self) -> Optional[os.PathLike]:
         load = getattr(self, platform.system().lower())
         return None if not load else os.path.expandvars(load)
 
 
-class CategoryDescription(typing.NamedTuple):
-    locations: List[str]
-    after_restore: List[List[str]] = []
+@dataclasses.dataclass(frozen=True)
+class Command:
+    args: tuple[str]
+
+    def __init__(self, *args):
+        object.__setattr__(self, 'args', args)
+
+    def on_current_platform(self) -> tuple[str]:
+        assert len(self.args) > 0
+        return (shutil.which(self.args[0]),) + self.args[1:]
+
+
+class CategoryDescription(NamedTuple):
+    locations: tuple[Location]
+    after_restore: tuple[Command] = ()
+
+    def is_not_enabled(self) -> bool:
+        return all(
+            not location.outside_repository() for location in self.locations
+        )
 
 
 class Category(CategoryDescription, enum.Enum):
 
     VSCODE = CategoryDescription(
-        locations=[
+        locations=(
             Location(
                 # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
                 save='Code/User/settings.json',
@@ -40,13 +61,13 @@ class Category(CategoryDescription, enum.Enum):
                 '$HOME/Library/Application Support/Code/User/settings.json',
                 windows='%APPDATA%/Code/User/settings.json'
             ),
-        ],
-        after_restore=[
-            [
+        ),
+        after_restore=(
+            Command(
                 'code', '--install-extension', 'vscodevim.vim',
                 '--install-extension', 'ms-python.python'
-            ],
-        ]
+            ),
+        )
     )
 
 
@@ -55,13 +76,12 @@ if __name__ == '__main__':
     import contextlib
     import difflib
     import io
-    import shutil
     import subprocess
 
-    def categories(names: List[str]) -> List[Category]:
-        return list(Category) if not names else [
+    def categories(names: tuple[str]) -> tuple[Category]:
+        return tuple(Category) if not names else (
             Category[name.upper()] for name in names
-        ]
+        )
 
     def open_or_empty(file: os.PathLike):
         if not os.path.isfile(file):
@@ -70,17 +90,21 @@ if __name__ == '__main__':
 
     def backup(args):
         for category in categories(args.categories):
+            if category.is_not_enabled():
+                continue
             print()
             print(category)
             print('=' * len(str(category)))
 
             for location in category.locations:
-                src = location.outside_repo()
-                dst = location.inside_repo()
+                src = location.outside_repository()
+                dst = location.inside_repository()
+                if not src:
+                    continue
                 print()
                 print('(src="{}",\n dst="{}")'.format(src, dst))
 
-                if args.dry_run or src is None:
+                if args.dry_run:
                     continue
 
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -88,24 +112,28 @@ if __name__ == '__main__':
 
     def restore(args):
         for category in categories(args.categories):
+            if category.is_not_enabled():
+                continue
             print()
             print(category)
             print('=' * len(str(category)))
 
             for location in category.locations:
-                src = location.inside_repo()
-                dst = location.outside_repo()
+                src = location.inside_repository()
+                dst = location.outside_repository()
+                if not dst:
+                    continue
                 print()
                 print('(src="{}",\n dst="{}")'.format(src, dst))
 
-                if args.dry_run or dst is None:
+                if args.dry_run:
                     continue
 
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
                 shutil.copyfile(src, dst)
 
             for command in category.after_restore:
-                command = [shutil.which(command[0])] + command[1:]
+                command = command.on_current_platform()
                 print()
                 print(command)
 
@@ -120,15 +148,16 @@ if __name__ == '__main__':
 
     def diff(args):
         for category in categories(args.categories):
+            if category.is_not_enabled():
+                continue
             print()
             print(category)
             print('=' * len(str(category)))
 
             for location in category.locations:
-                src = location.inside_repo()
-                dst = location.outside_repo()
-
-                if dst is None:
+                src = location.inside_repository()
+                dst = location.outside_repository()
+                if not dst:
                     continue
 
                 with open_or_empty(src) as src_file:
