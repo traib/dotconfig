@@ -1,13 +1,14 @@
+import dataclasses
+import enum
 import os
 import platform
-from dataclasses import dataclass
-from enum import Enum
+import typing
 from typing import List, Optional
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class Location:
     save: str
     linux: Optional[str] = None
@@ -22,20 +23,31 @@ class Location:
         return None if not load else os.path.expandvars(load)
 
 
-class Category(Enum):
+class CategoryDescription(typing.NamedTuple):
+    locations: List[str]
+    after_restore: List[List[str]] = []
 
-    def __init__(self, locations: List[Location]):
-        self.locations = locations
 
-    VSCODE = [
-        Location(
-            # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
-            save='Code/User/settings.json',
-            linux='$HOME/.config/Code/User/settings.json',
-            darwin='$HOME/Library/Application Support/Code/User/settings.json',
-            windows='%APPDATA%/Code/User/settings.json'
-        ),
-    ]
+class Category(CategoryDescription, enum.Enum):
+
+    VSCODE = CategoryDescription(
+        locations=[
+            Location(
+                # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
+                save='Code/User/settings.json',
+                linux='$HOME/.config/Code/User/settings.json',
+                darwin=
+                '$HOME/Library/Application Support/Code/User/settings.json',
+                windows='%APPDATA%/Code/User/settings.json'
+            ),
+        ],
+        after_restore=[
+            [
+                'code', '--install-extension', 'vscodevim.vim',
+                '--install-extension', 'ms-python.python'
+            ],
+        ]
+    )
 
 
 if __name__ == '__main__':
@@ -44,7 +56,7 @@ if __name__ == '__main__':
     import difflib
     import io
     import shutil
-    import sys
+    import subprocess
 
     def categories(names: List[str]) -> List[Category]:
         return list(Category) if not names else [
@@ -61,47 +73,64 @@ if __name__ == '__main__':
             print()
             print(category)
             print('=' * len(str(category)))
+
             for location in category.locations:
                 src = location.outside_repo()
                 dst = location.inside_repo()
                 print()
                 print('(src="{}",\n dst="{}")'.format(src, dst))
+
                 if args.dry_run or src is None:
                     continue
+
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
-                try:
-                    shutil.copyfile(src, dst)
-                except FileNotFoundError as err:
-                    print(err, file=sys.stderr)
+                shutil.copyfile(src, dst)
 
     def restore(args):
         for category in categories(args.categories):
             print()
             print(category)
             print('=' * len(str(category)))
+
             for location in category.locations:
                 src = location.inside_repo()
                 dst = location.outside_repo()
                 print()
                 print('(src="{}",\n dst="{}")'.format(src, dst))
+
                 if args.dry_run or dst is None:
                     continue
+
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
-                try:
-                    shutil.copyfile(src, dst)
-                except FileNotFoundError as err:
-                    print(err, file=sys.stderr)
+                shutil.copyfile(src, dst)
+
+            for command in category.after_restore:
+                command = [shutil.which(command[0])] + command[1:]
+                print()
+                print(command)
+
+                if args.dry_run:
+                    continue
+
+                print(
+                    subprocess.check_output(
+                        command, stderr=subprocess.STDOUT, text=True
+                    )
+                )
 
     def diff(args):
         for category in categories(args.categories):
             print()
             print(category)
             print('=' * len(str(category)))
+
             for location in category.locations:
                 src = location.inside_repo()
                 dst = location.outside_repo()
+
                 if dst is None:
                     continue
+
                 with open_or_empty(src) as src_file:
                     with open_or_empty(dst) as dst_file:
                         print()
