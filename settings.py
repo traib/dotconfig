@@ -1,6 +1,7 @@
 import dataclasses
 import enum
 import os
+import pathlib
 import platform
 import shutil
 import sys
@@ -8,7 +9,7 @@ from typing import NamedTuple, Optional
 
 assert sys.version_info >= (3, 9)
 
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 
 
 @dataclasses.dataclass(frozen=True)
@@ -18,13 +19,13 @@ class Location:
     darwin: Optional[str] = None
     windows: Optional[str] = None
 
-    def inside_repository(self) -> os.PathLike:
+    def inside_repository(self) -> pathlib.Path:
         assert self.save != ''
-        return os.path.join(SCRIPT_DIR, self.save)
+        return SCRIPT_DIR.joinpath(self.save)
 
-    def outside_repository(self) -> Optional[os.PathLike]:
+    def outside_repository(self) -> Optional[pathlib.Path]:
         load = getattr(self, platform.system().lower())
-        return None if not load else os.path.expandvars(load)
+        return None if not load else pathlib.Path(os.path.expandvars(load))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -76,7 +77,7 @@ class Category(CategoryDescription, enum.Enum):
             Command(
                 'curl', '--silent', '--show-error',
                 'https://raw.githubusercontent.com/grml/grml-etc-core/master/etc/zsh/zshrc',
-                '--output', os.path.join(SCRIPT_DIR, 'zsh/zshrc')
+                '--output', SCRIPT_DIR.joinpath('zsh/zshrc')
             ),
         ),
         locations=(
@@ -110,10 +111,10 @@ if __name__ == '__main__':
             Category[name.upper()] for name in names
         )
 
-    def open_or_empty(file: os.PathLike):
-        if not os.path.isfile(file):
+    def open_or_empty(path: pathlib.Path):
+        if not path.is_file():
             return contextlib.nullcontext(io.StringIO())
-        return open(file)
+        return open(path)
 
     def backup(args):
         for category in categories(args.categories):
@@ -134,7 +135,7 @@ if __name__ == '__main__':
                 if args.dry_run:
                     continue
 
-                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                dst.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(src, dst)
 
     def restore(args):
@@ -170,7 +171,7 @@ if __name__ == '__main__':
                 if args.dry_run:
                     continue
 
-                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                dst.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(src, dst)
 
             for command in category.after_restore:
@@ -208,8 +209,8 @@ if __name__ == '__main__':
                             *difflib.unified_diff(
                                 src_file.readlines(),
                                 dst_file.readlines(),
-                                fromfile=src,
-                                tofile=dst,
+                                fromfile=str(src),
+                                tofile=str(dst),
                                 n=0
                             )
                         )
