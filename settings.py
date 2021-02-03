@@ -41,6 +41,7 @@ class Command:
 
 class CategoryDescription(NamedTuple):
     locations: tuple[Location]
+    before_restore: tuple[Command] = ()
     after_restore: tuple[Command] = ()
 
     def is_not_enabled(self) -> bool:
@@ -67,7 +68,33 @@ class Category(CategoryDescription, enum.Enum):
                 'code', '--install-extension', 'vscodevim.vim',
                 '--install-extension', 'ms-python.python'
             ),
-        )
+        ),
+    )
+
+    ZSH = CategoryDescription(
+        before_restore=(
+            Command(
+                'curl', '--silent', '--show-error',
+                'https://raw.githubusercontent.com/grml/grml-etc-core/master/etc/zsh/zshrc',
+                '--output', os.path.join(SCRIPT_DIR, 'zsh/zshrc')
+            ),
+        ),
+        locations=(
+            # https://wiki.archlinux.org/index.php/zsh#Startup/Shutdown_files
+            Location(
+                save='zsh/zshrc.pre',
+                linux='$HOME/.zshrc.pre',
+                darwin='$HOME/.zshrc.pre'
+            ),
+            Location(
+                save='zsh/zshrc', linux='$HOME/.zshrc', darwin='$HOME/.zshrc'
+            ),
+            Location(
+                save='zsh/zshrc.local',
+                linux='$HOME/.zshrc.local',
+                darwin='$HOME/.zshrc.local'
+            ),
+        ),
     )
 
 
@@ -117,6 +144,20 @@ if __name__ == '__main__':
             print()
             print(category)
             print('=' * len(str(category)))
+
+            for command in category.before_restore:
+                command = command.on_current_platform()
+                print()
+                print(command)
+
+                if args.dry_run:
+                    continue
+
+                print(
+                    subprocess.check_output(
+                        command, stderr=subprocess.STDOUT, text=True
+                    )
+                )
 
             for location in category.locations:
                 src = location.inside_repository()
