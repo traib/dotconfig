@@ -18,7 +18,7 @@
         "--style={based_on_style: google, dedent_closing_brackets: true}"
     ],
     "python.linting.pylintArgs": [
-        "--disable=inherit-non-class,missing-docstring,redefined-outer-name,unsubscriptable-object"
+        "--disable=inherit-non-class,missing-docstring,redefined-outer-name,too-few-public-methods,unsubscriptable-object"
     ],
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
