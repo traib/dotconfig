@@ -1,0 +1,15 @@
+# Less
+export LESS='--ignore-case --RAW-CONTROL-CHARS'
+
+# Prompt
+prompt grml-large
+
+# Assume xterm supports 256 colors
+[[ -n "$DISPLAY" && "$TERM" == "xterm" ]] && export TERM=xterm-256color
+
+# Disable START/STOP output control, to free up C-s for forward history search
+stty -ixon
+
+# vi mode
+bindkey -v
+export KEYTIMEOUT=1

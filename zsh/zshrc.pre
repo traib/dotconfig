@@ -1,0 +1,2 @@
+# No apt-specific short aliases, e.g. ag, agi, ati etc.
+GRML_NO_APT_ALIASES=1
