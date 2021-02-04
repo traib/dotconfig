@@ -105,6 +105,7 @@ if __name__ == '__main__':
     import difflib
     import io
     import subprocess
+    import tempfile
 
     def categories(names: tuple[str]) -> tuple[Category]:
         return tuple(Category) if not names else (
@@ -115,6 +116,20 @@ if __name__ == '__main__':
         if not path.is_file():
             return contextlib.nullcontext(io.StringIO())
         return open(path)
+
+    def copyfile_ignore_same(src: pathlib.Path, dst: pathlib.Path):
+        try:
+            shutil.copyfile(src, dst)
+        except shutil.SameFileError as error:
+            print(error, file=sys.stderr)
+
+    def symlink_force(dst: pathlib.Path, src: pathlib.Path):
+        with tempfile.TemporaryDirectory(
+            dir=SCRIPT_DIR.joinpath('tmp')
+        ) as tmp_dir:
+            tmp_symlink = pathlib.Path(tmp_dir).joinpath('symlink')
+            tmp_symlink.symlink_to(dst)
+            tmp_symlink.replace(src)
 
     def backup(args):
         for category in categories(args.categories):
@@ -136,9 +151,9 @@ if __name__ == '__main__':
                     continue
 
                 dst.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(src, dst)
+                copyfile_ignore_same(src, dst)
 
-    def restore(args):
+    def restore(args, copyfile=copyfile_ignore_same):
         for category in categories(args.categories):
             if category.is_not_enabled():
                 continue
@@ -172,7 +187,7 @@ if __name__ == '__main__':
                     continue
 
                 dst.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(src, dst)
+                copyfile(src, dst)
 
             for command in category.after_restore:
                 command = command.on_current_platform()
@@ -187,6 +202,9 @@ if __name__ == '__main__':
                         command, stderr=subprocess.STDOUT, text=True
                     )
                 )
+
+    def install(args):
+        restore(args, copyfile=symlink_force)
 
     def diff(args):
         for category in categories(args.categories):
@@ -232,6 +250,16 @@ if __name__ == '__main__':
     restoreparser.set_defaults(handler=restore)
     restoreparser.add_argument('--dry-run', action='store_true')
     restoreparser.add_argument(
+        'categories',
+        nargs='*',
+        choices=[''] + [category.name.lower() for category in Category],
+        default=''
+    )
+
+    installparser = subparsers.add_parser('install')
+    installparser.set_defaults(handler=install)
+    installparser.add_argument('--dry-run', action='store_true')
+    installparser.add_argument(
         'categories',
         nargs='*',
         choices=[''] + [category.name.lower() for category in Category],
