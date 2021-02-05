@@ -15,12 +15,18 @@ SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 @dataclasses.dataclass(frozen=True)
 class Location:
     save: str
-    linux: Optional[str] = None
-    darwin: Optional[str] = None
-    windows: Optional[str] = None
+    linux: Optional[str]
+    darwin: Optional[str]
+    windows: Optional[str]
+
+    def __init__(self, save, linux=None, darwin=None, windows=None):
+        assert save
+        self.save = save
+        self.linux = linux
+        self.darwin = darwin
+        self.windows = windows
 
     def inside_repository(self) -> pathlib.Path:
-        assert self.save != ''
         return SCRIPT_DIR.joinpath(self.save)
 
     def outside_repository(self) -> Optional[pathlib.Path]:
@@ -33,17 +39,17 @@ class Command:
     args: tuple[str]
 
     def __init__(self, *args):
+        assert args
         object.__setattr__(self, 'args', args)
 
     def on_current_platform(self) -> tuple[str]:
-        assert len(self.args) > 0
         return (shutil.which(self.args[0]),) + self.args[1:]
 
 
 class CategoryDescription(NamedTuple):
     locations: tuple[Location]
-    before_restore: tuple[Command] = ()
-    after_restore: tuple[Command] = ()
+    before_install: tuple[Command] = ()
+    after_install: tuple[Command] = ()
 
     def is_not_enabled(self) -> bool:
         return all(
@@ -64,7 +70,7 @@ class Category(CategoryDescription, enum.Enum):
                 windows='%APPDATA%/Code/User/settings.json'
             ),
         ),
-        after_restore=(
+        after_install=(
             Command(
                 'code', '--install-extension', 'vscodevim.vim',
                 '--install-extension', 'ms-python.python'
@@ -73,7 +79,7 @@ class Category(CategoryDescription, enum.Enum):
     )
 
     ZSH = CategoryDescription(
-        before_restore=(
+        before_install=(
             Command(
                 'curl', '--silent', '--show-error',
                 'https://raw.githubusercontent.com/grml/grml-etc-core/master/etc/zsh/zshrc',
@@ -117,13 +123,7 @@ if __name__ == '__main__':
             return contextlib.nullcontext(io.StringIO())
         return open(path)
 
-    def copyfile_ignore_same(src: pathlib.Path, dst: pathlib.Path):
-        try:
-            shutil.copyfile(src, dst)
-        except shutil.SameFileError as error:
-            print(error, file=sys.stderr)
-
-    def symlink_force(dst: pathlib.Path, src: pathlib.Path):
+    def symlink_force(src: pathlib.Path, dst: pathlib.Path):
         with tempfile.TemporaryDirectory(
             dir=SCRIPT_DIR.joinpath('tmp')
         ) as tmp_dir:
@@ -131,13 +131,27 @@ if __name__ == '__main__':
             tmp_symlink.symlink_to(dst)
             tmp_symlink.replace(src)
 
-    def backup(args):
+    def install(args):
         for category in categories(args.categories):
             if category.is_not_enabled():
                 continue
             print()
             print(category)
             print('=' * len(str(category)))
+
+            for command in category.before_install:
+                command = command.on_current_platform()
+                print()
+                print('run{}'.format(command))
+
+                if args.dry_run:
+                    continue
+
+                print(
+                    subprocess.check_output(
+                        command, stderr=subprocess.STDOUT, text=True
+                    )
+                )
 
             for location in category.locations:
                 src = location.outside_repository()
@@ -145,26 +159,18 @@ if __name__ == '__main__':
                 if not src:
                     continue
                 print()
-                print('(src="{}",\n dst="{}")'.format(src, dst))
+                print("symlink(src='{}', dst='{}')".format(src, dst))
 
                 if args.dry_run:
                     continue
 
                 dst.parent.mkdir(parents=True, exist_ok=True)
-                copyfile_ignore_same(src, dst)
+                symlink_force(src, dst)
 
-    def restore(args, copyfile=copyfile_ignore_same):
-        for category in categories(args.categories):
-            if category.is_not_enabled():
-                continue
-            print()
-            print(category)
-            print('=' * len(str(category)))
-
-            for command in category.before_restore:
+            for command in category.after_install:
                 command = command.on_current_platform()
                 print()
-                print(command)
+                print('run{}'.format(command))
 
                 if args.dry_run:
                     continue
@@ -174,37 +180,6 @@ if __name__ == '__main__':
                         command, stderr=subprocess.STDOUT, text=True
                     )
                 )
-
-            for location in category.locations:
-                src = location.inside_repository()
-                dst = location.outside_repository()
-                if not dst:
-                    continue
-                print()
-                print('(src="{}",\n dst="{}")'.format(src, dst))
-
-                if args.dry_run:
-                    continue
-
-                dst.parent.mkdir(parents=True, exist_ok=True)
-                copyfile(src, dst)
-
-            for command in category.after_restore:
-                command = command.on_current_platform()
-                print()
-                print(command)
-
-                if args.dry_run:
-                    continue
-
-                print(
-                    subprocess.check_output(
-                        command, stderr=subprocess.STDOUT, text=True
-                    )
-                )
-
-    def install(args):
-        restore(args, copyfile=symlink_force)
 
     def diff(args):
         for category in categories(args.categories):
@@ -235,26 +210,6 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='subcommand', required=True)
-
-    backupparser = subparsers.add_parser('backup')
-    backupparser.set_defaults(handler=backup)
-    backupparser.add_argument('--dry-run', action='store_true')
-    backupparser.add_argument(
-        'categories',
-        nargs='*',
-        choices=[''] + [category.name.lower() for category in Category],
-        default=''
-    )
-
-    restoreparser = subparsers.add_parser('restore')
-    restoreparser.set_defaults(handler=restore)
-    restoreparser.add_argument('--dry-run', action='store_true')
-    restoreparser.add_argument(
-        'categories',
-        nargs='*',
-        choices=[''] + [category.name.lower() for category in Category],
-        default=''
-    )
 
     installparser = subparsers.add_parser('install')
     installparser.set_defaults(handler=install)
