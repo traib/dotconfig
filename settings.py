@@ -60,6 +60,24 @@ class CategoryDescription(NamedTuple):
 
 class Category(CategoryDescription, enum.Enum):
 
+    BASH = CategoryDescription(
+        prerequisites=("SH",),
+        locations=(
+            Location(
+                save='bash/bash_profile',
+                linux='$HOME/.bash_profile',
+                darwin='$HOME/.bash_profile',
+                windows='$HOME/.bash_profile'
+            ),
+            Location(
+                save='bash/bashrc',
+                linux='$HOME/.bashrc',
+                darwin='$HOME/.bashrc',
+                windows='$HOME/.bashrc'
+            ),
+        ),
+    )
+
     SH = CategoryDescription(
         locations=(
             Location(
@@ -67,6 +85,12 @@ class Category(CategoryDescription, enum.Enum):
                 linux='$HOME/.inputrc',
                 darwin='$HOME/.inputrc',
                 windows='$HOME/.inputrc'
+            ),
+            Location(
+                save='sh/profile',
+                linux='$HOME/.profile',
+                darwin='$HOME/.profile',
+                windows='$HOME/.profile'
             ),
         ),
     )
@@ -101,6 +125,11 @@ class Category(CategoryDescription, enum.Enum):
         ),
         locations=(
             # https://wiki.archlinux.org/index.php/zsh#Startup/Shutdown_files
+            Location(
+                save='zsh/zshenv',
+                linux='$HOME/.zshenv',
+                darwin='$HOME/.zshenv'
+            ),
             Location(
                 save='zsh/zshrc.pre',
                 linux='$HOME/.zshrc.pre',
