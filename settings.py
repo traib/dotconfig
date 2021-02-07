@@ -21,10 +21,10 @@ class Location:
 
     def __init__(self, save, linux=None, darwin=None, windows=None):
         assert save
-        self.save = save
-        self.linux = linux
-        self.darwin = darwin
-        self.windows = windows
+        object.__setattr__(self, 'save', save)
+        object.__setattr__(self, 'linux', linux)
+        object.__setattr__(self, 'darwin', darwin)
+        object.__setattr__(self, 'windows', windows)
 
     def inside_repository(self) -> pathlib.Path:
         return SCRIPT_DIR.joinpath(self.save)
@@ -47,8 +47,9 @@ class Command:
 
 
 class CategoryDescription(NamedTuple):
-    locations: tuple[Location]
+    prerequisites: tuple[str] = ()
     before_install: tuple[Command] = ()
+    locations: tuple[Location] = ()
     after_install: tuple[Command] = ()
 
     def is_not_enabled(self) -> bool:
@@ -58,6 +59,17 @@ class CategoryDescription(NamedTuple):
 
 
 class Category(CategoryDescription, enum.Enum):
+
+    SH = CategoryDescription(
+        locations=(
+            Location(
+                save='sh/inputrc',
+                linux='$HOME/.inputrc',
+                darwin='$HOME/.inputrc',
+                windows='$HOME/.inputrc'
+            ),
+        ),
+    )
 
     VSCODE = CategoryDescription(
         locations=(
@@ -79,6 +91,7 @@ class Category(CategoryDescription, enum.Enum):
     )
 
     ZSH = CategoryDescription(
+        prerequisites=('SH',),
         before_install=(
             Command(
                 'curl', '--silent', '--show-error',
@@ -109,14 +122,32 @@ if __name__ == '__main__':
     import argparse
     import contextlib
     import difflib
+    import graphlib
     import io
     import subprocess
     import tempfile
 
-    def categories(names: tuple[str]) -> tuple[Category]:
-        return tuple(Category) if not names else (
+    def as_categories(
+        names: tuple[str], default=tuple(Category)
+    ) -> tuple[Category]:
+        return default if not names else tuple(
             Category[name.upper()] for name in names
         )
+
+    def toposort(names: tuple[str]) -> tuple[Category]:
+        visited = set()
+        to_visit = list(as_categories(names))
+        sorter = graphlib.TopologicalSorter()
+        while to_visit:
+            category = to_visit.pop()
+            prerequisites = as_categories(category.prerequisites, default=())
+            visited.add(category)
+            sorter.add(category, *prerequisites)
+            to_visit.extend(
+                prerequisite for prerequisite in prerequisites
+                if prerequisite not in visited
+            )
+        return sorter.static_order()
 
     def open_or_empty(path: pathlib.Path):
         if not path.is_file():
@@ -132,7 +163,7 @@ if __name__ == '__main__':
             tmp_symlink.replace(src)
 
     def install(args):
-        for category in categories(args.categories):
+        for category in toposort(args.categories):
             if category.is_not_enabled():
                 continue
             print()
@@ -182,7 +213,7 @@ if __name__ == '__main__':
                 )
 
     def diff(args):
-        for category in categories(args.categories):
+        for category in toposort(args.categories):
             if category.is_not_enabled():
                 continue
             print()
