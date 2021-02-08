@@ -97,8 +97,15 @@ class Category(CategoryDescription, enum.Enum):
 
     VSCODE = CategoryDescription(
         locations=(
+            # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
             Location(
-                # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
+                save='Code/User/keybindings.json',
+                linux='$HOME/.config/Code/User/keybindings.json',
+                darwin=
+                '$HOME/Library/Application Support/Code/User/keybindings.json',
+                windows='%APPDATA%/Code/User/keybindings.json'
+            ),
+            Location(
                 save='Code/User/settings.json',
                 linux='$HOME/.config/Code/User/settings.json',
                 darwin=
