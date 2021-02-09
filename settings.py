@@ -61,7 +61,7 @@ class CategoryDescription(NamedTuple):
 class Category(CategoryDescription, enum.Enum):
 
     BASH = CategoryDescription(
-        prerequisites=("SH",),
+        prerequisites=('SH',),
         locations=(
             Location(
                 save='bash/bash_profile',
@@ -74,6 +74,17 @@ class Category(CategoryDescription, enum.Enum):
                 linux='$HOME/.bashrc',
                 darwin='$HOME/.bashrc',
                 windows='$HOME/.bashrc'
+            ),
+        ),
+    )
+
+    GIT = CategoryDescription(
+        locations=(
+            Location(
+                save='git/config',
+                linux='$HOME/.gitconfig',
+                darwin='$HOME/.gitconfig',
+                windows='$HOME/.gitconfig'
             ),
         ),
     )
@@ -115,8 +126,13 @@ class Category(CategoryDescription, enum.Enum):
         ),
         after_install=(
             Command(
-                'code', '--install-extension', 'vscodevim.vim',
-                '--install-extension', 'ms-python.python'
+                'code',
+                '--install-extension',
+                'ms-python.python',
+                '--install-extension',
+                'rust-lang.rust',
+                '--install-extension',
+                'vscodevim.vim',
             ),
         ),
     )
