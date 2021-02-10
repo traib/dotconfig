@@ -1,0 +1,14 @@
+# Use VSCode as the default text editor, except for sudoedit
+export VISUAL='code --new-window --wait'
+export EDITOR="${VISUAL}"
+export SUDO_EDITOR='vi'
+
+# Color everywhere
+# https://wiki.archlinux.org/index.php/Color_output_in_console
+alias diff='diff --color=auto'
+alias grep='grep --color=auto'
+alias ip='ip -color=auto'
+alias la='ll --all'
+alias ll='ls -l --human-readable --time-style=long-iso'
+alias ls='ls --color=auto --classify --group-directories-first'
+export LESS='--RAW-CONTROL-CHARS --ignore-case'

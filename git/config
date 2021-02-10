@@ -1,0 +1,17 @@
+# https://git-scm.com/docs/git-config
+[user]
+	name = traib
+	email = traib@users.noreply.github.com
+[color]
+	ui = auto
+[core]
+	eol = lf
+	autocrlf = input
+[diff]
+	mnemonicPrefix = true
+[init]
+	defaultBranch = master
+[log]
+	date = iso
+[pull]
+	rebase = true
