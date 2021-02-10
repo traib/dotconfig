@@ -1,1 +1,16 @@
 source "${HOME}/.profile"
+
+# https://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
+shopt -s checkjobs
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s failglob
+shopt -s histappend
+
+# https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
+HISTCONTROL=ignoreboth:erasedups
+HISTFILESIZE=-1
+HISTIGNORE='bg:clear:fg:history:la:ll:ls:pwd:reset'
+HISTSIZE=-1
+HISTTIMEFORMAT='%F %T %z: '
+PROMPT_COMMAND='history -a'
