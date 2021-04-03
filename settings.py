@@ -52,7 +52,7 @@ class CategoryDescription(NamedTuple):
     locations: tuple[Location] = ()
     after_install: tuple[Command] = ()
 
-    def is_not_enabled(self) -> bool:
+    def is_disabled(self) -> bool:
         return all(
             not location.outside_repository() for location in self.locations
         )
@@ -186,7 +186,7 @@ if __name__ == '__main__':
             Category[name.upper()] for name in names
         )
 
-    def toposort(names: tuple[str]) -> tuple[Category]:
+    def topological_sort(names: tuple[str]) -> tuple[Category]:
         visited = set()
         to_visit = list(as_categories(names))
         sorter = graphlib.TopologicalSorter()
@@ -211,12 +211,12 @@ if __name__ == '__main__':
             dir=SCRIPT_DIR.joinpath('tmp')
         ) as tmp_dir:
             tmp_symlink = pathlib.Path(tmp_dir).joinpath('symlink')
-            tmp_symlink.symlink_to(dst)
-            tmp_symlink.replace(src)
+            tmp_symlink.symlink_to(src)
+            tmp_symlink.replace(dst)
 
     def install(args):
-        for category in toposort(args.categories):
-            if category.is_not_enabled():
+        for category in topological_sort(args.categories):
+            if category.is_disabled():
                 continue
             print()
             print(category)
@@ -225,7 +225,7 @@ if __name__ == '__main__':
             for command in category.before_install:
                 command = command.on_current_platform()
                 print()
-                print('run{}'.format(command))
+                print(f'run{command}')
 
                 if args.dry_run:
                     continue
@@ -237,12 +237,12 @@ if __name__ == '__main__':
                 )
 
             for location in category.locations:
-                src = location.outside_repository()
-                dst = location.inside_repository()
-                if not src:
+                src = location.inside_repository()
+                dst = location.outside_repository()
+                if not dst:
                     continue
                 print()
-                print("symlink(src='{}', dst='{}')".format(src, dst))
+                print(f"symlink(src='{src}', dst='{dst}')")
 
                 if args.dry_run:
                     continue
@@ -253,7 +253,7 @@ if __name__ == '__main__':
             for command in category.after_install:
                 command = command.on_current_platform()
                 print()
-                print('run{}'.format(command))
+                print(f'run{command}')
 
                 if args.dry_run:
                     continue
@@ -265,8 +265,8 @@ if __name__ == '__main__':
                 )
 
     def diff(args):
-        for category in toposort(args.categories):
-            if category.is_not_enabled():
+        for category in topological_sort(args.categories):
+            if category.is_disabled():
                 continue
             print()
             print(category)
