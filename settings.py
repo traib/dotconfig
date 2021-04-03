@@ -225,7 +225,7 @@ if __name__ == '__main__':
             for command in category.before_install:
                 command = command.on_current_platform()
                 print()
-                print('run{}'.format(command))
+                print(f"run{command}")
 
                 if args.dry_run:
                     continue
@@ -242,7 +242,7 @@ if __name__ == '__main__':
                 if not src:
                     continue
                 print()
-                print("symlink(src='{}', dst='{}')".format(src, dst))
+                print(f"symlink(src='{src}', dst='{dst}')")
 
                 if args.dry_run:
                     continue
@@ -253,7 +253,7 @@ if __name__ == '__main__':
             for command in category.after_install:
                 command = command.on_current_platform()
                 print()
-                print('run{}'.format(command))
+                print(f"run{command}")
 
                 if args.dry_run:
                     continue
