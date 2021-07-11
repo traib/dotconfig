@@ -8,12 +8,12 @@
     "editor.cursorBlinking": "solid",
     "editor.fontFamily": "Inconsolata, Consolas, monospace",
     "editor.formatOnSave": true,
-    "editor.matchBrackets": "near",
     "editor.renderWhitespace": "trailing",
     "extensions.ignoreRecommendations": true,
     "files.eol": "\n",
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
+    "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
     "json.schemaDownload.enable": false,
     "npm.fetchOnlinePackageInfo": false,
     "python.experiments.enabled": false,
@@ -25,10 +25,15 @@
         "--disable=inherit-non-class,missing-docstring,redefined-outer-name,too-few-public-methods,unsubscriptable-object"
     ],
     "rust.clippy_preference": "on",
+    "security.workspace.trust.banner": "never",
+    "security.workspace.trust.emptyWindow": false,
+    "security.workspace.trust.startupPrompt": "never",
+    "security.workspace.trust.untrustedFiles": "newWindow",
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
-    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.showExitAlert": false,
+    "terminal.integrated.showLinkHover": false,
     "typescript.disableAutomaticTypeAcquisition": true,
     "vim.changeWordIncludesWhitespace": true,
     "vim.highlightedyank.enable": true,
@@ -64,12 +69,6 @@
     "workbench.editor.enablePreview": false,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.wrapTabs": true,
-    "workbench.editorAssociations": [
-        {
-            "viewType": "jupyter.notebook.ipynb",
-            "filenamePattern": "*.ipynb"
-        }
-    ],
     "workbench.enableExperiments": false,
     "workbench.settings.enableNaturalLanguageSearch": false,
     "workbench.sideBar.location": "right",
