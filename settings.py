@@ -176,6 +176,7 @@ if __name__ == '__main__':
     import difflib
     import graphlib
     import io
+    import shutil
     import subprocess
     import tempfile
 
@@ -214,6 +215,14 @@ if __name__ == '__main__':
             tmp_symlink.symlink_to(src)
             tmp_symlink.replace(dst)
 
+    def cp_force(src: pathlib.Path, dst: pathlib.Path):
+        with tempfile.TemporaryDirectory(
+            dir=SCRIPT_DIR.joinpath('tmp')
+        ) as tmp_dir:
+            tmp_cp = pathlib.Path(tmp_dir).joinpath('cp')
+            shutil.copyfile(src, tmp_cp, follow_symlinks=False)
+            tmp_cp.replace(dst)
+
     def install(args):
         for category in topological_sort(args.categories):
             if category.is_disabled():
@@ -237,18 +246,21 @@ if __name__ == '__main__':
                 )
 
             for location in category.locations:
+                operation = symlink_force if not args.cp else cp_force
+                operation_name = 'symlink' if not args.cp else 'cp'
+
                 src = location.inside_repository()
                 dst = location.outside_repository()
                 if not dst:
                     continue
                 print()
-                print(f"symlink(src='{src}', dst='{dst}')")
+                print(f"{operation_name}(src='{src}', dst='{dst}')")
 
                 if args.dry_run:
                     continue
 
                 dst.parent.mkdir(parents=True, exist_ok=True)
-                symlink_force(src, dst)
+                operation(src, dst)
 
             for command in category.after_install:
                 command = command.on_current_platform()
@@ -297,6 +309,7 @@ if __name__ == '__main__':
     installparser = subparsers.add_parser('install')
     installparser.set_defaults(handler=install)
     installparser.add_argument('--dry-run', action='store_true')
+    installparser.add_argument('--cp', action='store_true')
     installparser.add_argument(
         'categories',
         nargs='*',
