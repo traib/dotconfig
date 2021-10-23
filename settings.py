@@ -132,6 +132,8 @@ class Category(CategoryDescription, enum.Enum):
                 '--install-extension',
                 'rust-lang.rust',
                 '--install-extension',
+                'vscjava.vscode-java-pack',
+                '--install-extension',
                 'vscodevim.vim',
             ),
         ),
