@@ -110,14 +110,14 @@ class Category(CategoryDescription, enum.Enum):
         locations=(
             # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
             Location(
-                save='Code/User/keybindings.json',
+                save='vscode/Code/User/keybindings.json',
                 linux='$HOME/.config/Code/User/keybindings.json',
                 darwin=
                 '$HOME/Library/Application Support/Code/User/keybindings.json',
                 windows='%APPDATA%/Code/User/keybindings.json'
             ),
             Location(
-                save='Code/User/settings.json',
+                save='vscode/Code/User/settings.json',
                 linux='$HOME/.config/Code/User/settings.json',
                 darwin=
                 '$HOME/Library/Application Support/Code/User/settings.json',
@@ -127,12 +127,6 @@ class Category(CategoryDescription, enum.Enum):
         after_install=(
             Command(
                 'code',
-                '--install-extension',
-                'ms-python.python',
-                '--install-extension',
-                'rust-lang.rust',
-                '--install-extension',
-                'vscjava.vscode-java-pack',
                 '--install-extension',
                 'vscodevim.vim',
             ),
@@ -150,11 +144,6 @@ class Category(CategoryDescription, enum.Enum):
         ),
         locations=(
             # https://wiki.archlinux.org/index.php/zsh#Startup/Shutdown_files
-            Location(
-                save='zsh/zshenv',
-                linux='$HOME/.zshenv',
-                darwin='$HOME/.zshenv'
-            ),
             Location(
                 save='zsh/zshrc.pre',
                 linux='$HOME/.zshrc.pre',
