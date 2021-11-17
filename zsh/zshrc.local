@@ -1,5 +1,4 @@
-# Less
-export LESS='--ignore-case --RAW-CONTROL-CHARS'
+emulate sh -c "source ${HOME}/.profile"
 
 # Prompt
 prompt grml-large

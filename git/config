@@ -5,8 +5,9 @@
 [color]
 	ui = auto
 [core]
-	eol = lf
 	autocrlf = input
+	editor = code --new-window --wait
+	eol = lf
 [diff]
 	mnemonicPrefix = true
 [init]
