@@ -1,5 +1,3 @@
-emulate sh -c "source ${HOME}/.profile"
-
 # Prompt
 prompt grml-large
 
@@ -12,3 +10,9 @@ stty -ixon
 # vi mode
 bindkey -v
 export KEYTIMEOUT=1
+
+# https://zsh.sourceforge.io/Doc/Release/Options.html
+setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
