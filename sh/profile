@@ -1,14 +1,22 @@
+# Homebrew
+if [ -x '/opt/homebrew/bin/brew' ]
+then
+  export HOMEBREW_NO_ANALYTICS=1
+  export HOMEBREW_NO_INSECURE_REDIRECT=1
+  export HOMEBREW_CASK_OPTS='--require-sha'
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# https://formulae.brew.sh/formula/python@3.10
+if [ -x '/opt/homebrew/opt/python@3.10/bin/python3' ]
+then
+  export PATH="/opt/homebrew/opt/python@3.10/bin:$PATH"
+fi
+
 # Use VSCode as the default text editor, except for sudoedit
 export VISUAL='code --new-window --wait'
 export EDITOR="${VISUAL}"
 export SUDO_EDITOR='vi'
 
-# Color everywhere
-# https://wiki.archlinux.org/index.php/Color_output_in_console
-alias diff='diff --color=auto'
-alias grep='grep --color=auto'
-alias ip='ip -color=auto'
-alias la='ll --all'
-alias ll='ls -l --human-readable --time-style=long-iso'
-alias ls='ls --color=auto --classify --group-directories-first'
-export LESS='--RAW-CONTROL-CHARS --ignore-case'
+# https://www.freebsd.org/cgi/man.cgi?less(1)
+export LESS='--ignore-case --LINE-NUMBERS --RAW-CONTROL-CHARS'
