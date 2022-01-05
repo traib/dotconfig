@@ -110,18 +110,10 @@ class Category(CategoryDescription, enum.Enum):
         locations=(
             # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
             Location(
-                save='vscode/Code/User/keybindings.json',
-                linux='$HOME/.config/Code/User/keybindings.json',
-                darwin=
-                '$HOME/Library/Application Support/Code/User/keybindings.json',
-                windows='%APPDATA%/Code/User/keybindings.json'
-            ),
-            Location(
-                save='vscode/Code/User/settings.json',
-                linux='$HOME/.config/Code/User/settings.json',
-                darwin=
-                '$HOME/Library/Application Support/Code/User/settings.json',
-                windows='%APPDATA%/Code/User/settings.json'
+                save='vscode/',
+                linux='$HOME/.config/Code/',
+                darwin='$HOME/Library/Application Support/Code/',
+                windows='%APPDATA%/Code/'
             ),
         ),
         after_install=(
@@ -244,14 +236,35 @@ if __name__ == '__main__':
                 dst = location.outside_repository()
                 if not dst:
                     continue
-                print()
-                print(f"{operation_name}(src='{src}', dst='{dst}')")
 
-                if args.dry_run:
-                    continue
+                operation_paths = []
 
-                dst.parent.mkdir(parents=True, exist_ok=True)
-                operation(src, dst)
+                if src.is_file():
+                    operation_paths.append((src, dst))
+
+                if src.is_dir():
+                    for dirpath, _, filenames in os.walk(src):
+                        if not filenames:
+                            continue
+
+                        for filename in filenames:
+                            dir = pathlib.PurePath(dirpath)
+                            rel = dir.relative_to(src).joinpath(filename)
+                            operation_paths.append(
+                                (src.joinpath(rel), dst.joinpath(rel))
+                            )
+
+                for src_path, dst_path in operation_paths:
+                    print()
+                    print(
+                        f"{operation_name}(src='{src_path}', dst='{dst_path}')"
+                    )
+
+                    if args.dry_run:
+                        continue
+
+                    dst.parent.mkdir(parents=True, exist_ok=True)
+                    operation(src_path, dst_path)
 
             for command in category.after_install:
                 command = command.on_current_platform()
@@ -281,18 +294,38 @@ if __name__ == '__main__':
                 if not dst:
                     continue
 
-                with open_or_empty(src) as src_file:
-                    with open_or_empty(dst) as dst_file:
-                        print()
-                        print(
-                            *difflib.unified_diff(
-                                src_file.readlines(),
-                                dst_file.readlines(),
-                                fromfile=str(src),
-                                tofile=str(dst),
-                                n=0
+                diff_paths = []
+
+                if src.is_file():
+                    diff_paths.append((src, dst))
+
+                if src.is_dir():
+                    for dirpath, _, filenames in os.walk(src):
+                        if not filenames:
+                            continue
+
+                        for filename in filenames:
+                            dir = pathlib.PurePath(dirpath)
+                            rel = dir.relative_to(src).joinpath(filename)
+                            diff_paths.append(
+                                (src.joinpath(rel), dst.joinpath(rel))
                             )
-                        )
+
+                for src_path, dst_path in diff_paths:
+                    with open_or_empty(src_path) as src_file:
+                        with open_or_empty(dst_path) as dst_file:
+                            deltas = list(
+                                difflib.unified_diff(
+                                    src_file.readlines(),
+                                    dst_file.readlines(),
+                                    fromfile=str(src_path),
+                                    tofile=str(dst_path),
+                                    n=0
+                                )
+                            )
+                            if deltas:
+                                print()
+                                print(''.join(deltas))
 
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='subcommand', required=True)
