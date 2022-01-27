@@ -89,6 +89,18 @@ class Category(CategoryDescription, enum.Enum):
         ),
     )
 
+    JETBRAINS = CategoryDescription(
+        locations=(
+            # https://www.jetbrains.com/help/idea/directories-used-by-the-ide-to-store-settings-caches-plugins-and-logs.html#config-directory
+            Location(
+                save='jetbrains/',
+                linux='$HOME/.config/JetBrains/',
+                darwin='$HOME/Library/Application Support/JetBrains/',
+                windows='%APPDATA%/JetBrains/'
+            ),
+        ),
+    )
+
     SH = CategoryDescription(
         locations=(
             Location(

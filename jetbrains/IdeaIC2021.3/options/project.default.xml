@@ -1,0 +1,18 @@
+<application>
+  <component name="ProjectManager">
+    <defaultProject>
+      <component name="AutoImportSettings">
+        <option name="autoReloadType" value="SELECTIVE" />
+      </component>
+      <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+        <file url="PROJECT" charset="UTF-8" />
+      </component>
+      <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="17" project-jdk-type="JavaSDK" />
+      <component name="ProjectTasksOptions">
+        <enabled-global>
+          <option value="Google Java Format" />
+        </enabled-global>
+      </component>
+    </defaultProject>
+  </component>
+</application>
