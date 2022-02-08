@@ -10,24 +10,25 @@ from typing import NamedTuple, Optional
 assert sys.version_info >= (3, 9)
 
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
+REPOSITORY = SCRIPT_DIR.joinpath('repository')
 
 
 @dataclasses.dataclass(frozen=True)
 class Location:
-    save: str
+    repo: str
     linux: Optional[str]
     darwin: Optional[str]
     windows: Optional[str]
 
-    def __init__(self, save, linux=None, darwin=None, windows=None):
-        assert save
-        object.__setattr__(self, 'save', save)
+    def __init__(self, repo, linux=None, darwin=None, windows=None):
+        assert repo
+        object.__setattr__(self, 'repo', repo)
         object.__setattr__(self, 'linux', linux)
         object.__setattr__(self, 'darwin', darwin)
         object.__setattr__(self, 'windows', windows)
 
     def inside_repository(self) -> pathlib.Path:
-        return SCRIPT_DIR.joinpath(self.save)
+        return REPOSITORY.joinpath(self.repo)
 
     def outside_repository(self) -> Optional[pathlib.Path]:
         load = getattr(self, platform.system().lower())
@@ -64,13 +65,13 @@ class Category(CategoryDescription, enum.Enum):
         prerequisites=('SH',),
         locations=(
             Location(
-                save='bash/bash_profile',
+                repo='bash/bash_profile',
                 linux='$HOME/.bash_profile',
                 darwin='$HOME/.bash_profile',
                 windows='$HOME/.bash_profile'
             ),
             Location(
-                save='bash/bashrc',
+                repo='bash/bashrc',
                 linux='$HOME/.bashrc',
                 darwin='$HOME/.bashrc',
                 windows='$HOME/.bashrc'
@@ -81,7 +82,7 @@ class Category(CategoryDescription, enum.Enum):
     GIT = CategoryDescription(
         locations=(
             Location(
-                save='git/config',
+                repo='git/config',
                 linux='$HOME/.gitconfig',
                 darwin='$HOME/.gitconfig',
                 windows='$HOME/.gitconfig'
@@ -93,7 +94,7 @@ class Category(CategoryDescription, enum.Enum):
         locations=(
             # https://www.jetbrains.com/help/idea/directories-used-by-the-ide-to-store-settings-caches-plugins-and-logs.html#config-directory
             Location(
-                save='jetbrains/',
+                repo='jetbrains/',
                 linux='$HOME/.config/JetBrains/',
                 darwin='$HOME/Library/Application Support/JetBrains/',
                 windows='%APPDATA%/JetBrains/'
@@ -104,13 +105,13 @@ class Category(CategoryDescription, enum.Enum):
     SH = CategoryDescription(
         locations=(
             Location(
-                save='sh/inputrc',
+                repo='sh/inputrc',
                 linux='$HOME/.inputrc',
                 darwin='$HOME/.inputrc',
                 windows='$HOME/.inputrc'
             ),
             Location(
-                save='sh/profile',
+                repo='sh/profile',
                 linux='$HOME/.profile',
                 darwin='$HOME/.profile',
                 windows='$HOME/.profile'
@@ -122,7 +123,7 @@ class Category(CategoryDescription, enum.Enum):
         locations=(
             # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
             Location(
-                save='vscode/',
+                repo='vscode/',
                 linux='$HOME/.config/Code/',
                 darwin='$HOME/Library/Application Support/Code/',
                 windows='%APPDATA%/Code/'
@@ -143,21 +144,21 @@ class Category(CategoryDescription, enum.Enum):
             Command(
                 'curl', '--silent', '--show-error',
                 'https://raw.githubusercontent.com/grml/grml-etc-core/master/etc/zsh/zshrc',
-                '--output', SCRIPT_DIR.joinpath('zsh/zshrc')
+                '--output', REPOSITORY.joinpath('zsh/zshrc')
             ),
         ),
         locations=(
             # https://wiki.archlinux.org/index.php/zsh#Startup/Shutdown_files
             Location(
-                save='zsh/zshrc.pre',
+                repo='zsh/zshrc.pre',
                 linux='$HOME/.zshrc.pre',
                 darwin='$HOME/.zshrc.pre'
             ),
             Location(
-                save='zsh/zshrc', linux='$HOME/.zshrc', darwin='$HOME/.zshrc'
+                repo='zsh/zshrc', linux='$HOME/.zshrc', darwin='$HOME/.zshrc'
             ),
             Location(
-                save='zsh/zshrc.local',
+                repo='zsh/zshrc.local',
                 linux='$HOME/.zshrc.local',
                 darwin='$HOME/.zshrc.local'
             ),
@@ -209,7 +210,7 @@ if __name__ == '__main__':
 
     def symlink_force(src: pathlib.Path, dst: pathlib.Path):
         with tempfile.TemporaryDirectory(
-            dir=SCRIPT_DIR.joinpath('tmp')
+            dir=REPOSITORY.joinpath('tmp')
         ) as tmp_dir:
             tmp_symlink = pathlib.Path(tmp_dir).joinpath('symlink')
             tmp_symlink.symlink_to(src)
@@ -217,7 +218,7 @@ if __name__ == '__main__':
 
     def cp_force(src: pathlib.Path, dst: pathlib.Path):
         with tempfile.TemporaryDirectory(
-            dir=SCRIPT_DIR.joinpath('tmp')
+            dir=REPOSITORY.joinpath('tmp')
         ) as tmp_dir:
             tmp_cp = pathlib.Path(tmp_dir).joinpath('cp')
             shutil.copyfile(src, tmp_cp, follow_symlinks=False)
