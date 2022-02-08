@@ -202,6 +202,11 @@ if __name__ == '__main__':
             return contextlib.nullcontext(io.StringIO())
         return open(path)
 
+    def mkparents(path: pathlib.Path):
+        for parent in reversed(path.parents):
+            if not parent.exists():
+                parent.mkdir(mode=0o700, parents=False, exist_ok=True)
+
     def symlink_force(src: pathlib.Path, dst: pathlib.Path):
         with tempfile.TemporaryDirectory(
             dir=SCRIPT_DIR.joinpath('tmp')
@@ -275,7 +280,7 @@ if __name__ == '__main__':
                     if args.dry_run:
                         continue
 
-                    dst.parent.mkdir(parents=True, exist_ok=True)
+                    mkparents(dst_path)
                     operation(src_path, dst_path)
 
             for command in category.after_install:
