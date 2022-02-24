@@ -11,6 +11,7 @@
       <component name="ProjectTasksOptions">
         <enabled-global>
           <option value="Google Java Format" />
+          <option value="Clang Proto Format" />
         </enabled-global>
       </component>
     </defaultProject>
