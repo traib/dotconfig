@@ -12,6 +12,8 @@
     "editor.lineHeight": 1.2,
     "editor.renderWhitespace": "trailing",
     "editor.suggestSelection": "first",
+    "editor.tabSize": 2,
+    "editor.wordWrap": "on",
     "extensions.autoUpdate": "onlyEnabledExtensions",
     "extensions.ignoreRecommendations": true,
     "files.eol": "\n",
