@@ -7,6 +7,16 @@
       <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
         <file url="PROJECT" charset="UTF-8" />
       </component>
+      <component name="MarkdownSettingsMigration">
+        <option name="stateVersion" value="1" />
+      </component>
+      <component name="MavenImportPreferences">
+        <option name="generalSettings">
+          <MavenGeneralSettings>
+            <option name="checksumPolicy" value="FAIL" />
+          </MavenGeneralSettings>
+        </option>
+      </component>
       <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="17" project-jdk-type="JavaSDK" />
       <component name="ProjectTasksOptions">
         <enabled-global>

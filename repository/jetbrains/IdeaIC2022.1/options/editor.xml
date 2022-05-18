@@ -4,4 +4,7 @@
     <option name="IS_ENSURE_NEWLINE_AT_EOF" value="true" />
     <option name="REMOVE_TRAILING_BLANK_LINES" value="true" />
   </component>
+  <component name="JavaCodeFoldingSettings">
+    <option name="collapseOneLineMethods" value="false" />
+  </component>
 </application>
