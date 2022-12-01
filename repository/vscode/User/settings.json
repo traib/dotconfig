@@ -13,7 +13,6 @@
     "editor.renderWhitespace": "trailing",
     "editor.suggestSelection": "first",
     "editor.tabSize": 2,
-    "editor.wordWrap": "on",
     "extensions.autoUpdate": "onlyEnabledExtensions",
     "extensions.ignoreRecommendations": true,
     "files.eol": "\n",
