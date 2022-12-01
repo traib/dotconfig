@@ -2,6 +2,21 @@
 [user]
 	name = traib
 	email = traib@users.noreply.github.com
+[alias]
+	ad = add --patch
+	ca = commit --amend --verbose
+	cm = commit --verbose
+	df = diff
+	lg = log
+	lgf = lg --pretty=fuller
+	lgr = lg --pretty=reference
+	rb = rebase
+	rbi = rb --interactive
+	rba = rb --abort
+	rbc = rb --continue
+	rs = restore --patch
+	rss = rs --staged
+	st = status
 [color]
 	ui = auto
 [core]
