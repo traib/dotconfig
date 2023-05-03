@@ -73,6 +73,7 @@ def install(args):
         if category.is_disabled():
             continue
         print()
+        print('=' * len(str(category)))
         print(category)
         print('=' * len(str(category)))
 
@@ -146,6 +147,7 @@ def diff(args):
         if category.is_disabled():
             continue
         print()
+        print('=' * len(str(category)))
         print(category)
         print('=' * len(str(category)))
 
