@@ -4,6 +4,7 @@
             "source.organizeImports": true
         }
     },
+    "diffEditor.diffAlgorithm": "advanced",
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.cursorBlinking": "solid",
     "editor.fontFamily": "Inconsolata, monospace",
@@ -35,6 +36,7 @@
     "python.formatting.yapfArgs": [
         "--style={based_on_style: google, dedent_closing_brackets: true}"
     ],
+    "python.formatting.yapfPath": "/opt/homebrew/bin/yapf",
     "python.pythonPath": "python3",
     "python.showStartPage": false,
     "rust.clippy_preference": "on",
