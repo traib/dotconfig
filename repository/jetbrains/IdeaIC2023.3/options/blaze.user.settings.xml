@@ -1,0 +1,9 @@
+<application>
+  <component name="BlazeUserSettings">
+    <option name="showBlazeConsoleOnRun" value="On error" />
+    <option name="showBlazeConsoleOnSync" value="On error" />
+    <option name="showProblemsViewOnRun" value="On error" />
+    <option name="showProblemsViewOnSync" value="On error" />
+    <option name="syncStatusPopupShown" value="true" />
+  </component>
+</application>
