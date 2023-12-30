@@ -1,10 +1,7 @@
 {
-    "[python]": {
-        "editor.codeActionsOnSave": {
-            "source.organizeImports": true
-        }
-    },
     "diffEditor.diffAlgorithm": "advanced",
+    "diffEditor.experimental.showMoves": true,
+    "diffEditor.hideUnchangedRegions.enabled": true,
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.cursorBlinking": "solid",
     "editor.fontFamily": "Inconsolata, monospace",
@@ -32,11 +29,6 @@
     "npm.fetchOnlinePackageInfo": false,
     "python.defaultInterpreterPath": "python3",
     "python.experiments.enabled": false,
-    "python.formatting.provider": "yapf",
-    "python.formatting.yapfArgs": [
-        "--style={based_on_style: google, dedent_closing_brackets: true}"
-    ],
-    "python.formatting.yapfPath": "/opt/homebrew/bin/yapf",
     "python.pythonPath": "python3",
     "python.showStartPage": false,
     "rust.clippy_preference": "on",

@@ -1,8 +1,4 @@
-import sys
-
-sys.dont_write_bytecode = True
-assert sys.version_info >= (3, 9)
-assert __name__ == '__main__'
+from repository import REPOSITORY, Category
 
 import argparse
 import contextlib
@@ -13,9 +9,11 @@ import os
 import pathlib
 import shutil
 import subprocess
+import sys
 import tempfile
 
-from repository import REPOSITORY, Category
+assert sys.version_info >= (3, 9)
+assert __name__ == '__main__'
 
 
 def as_categories(
