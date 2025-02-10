@@ -1,3 +1,5 @@
+emulate sh -c "source ${HOME}/.profile"
+
 # Prompt
 prompt grml-large
 
