@@ -1,4 +1,5 @@
 {
+    "chat.commandCenter.enabled": false,
     "diffEditor.diffAlgorithm": "advanced",
     "diffEditor.experimental.showMoves": true,
     "diffEditor.hideUnchangedRegions.enabled": true,
@@ -27,9 +28,7 @@
     "java.recommendations.dependency.analytics.show": false,
     "json.schemaDownload.enable": false,
     "npm.fetchOnlinePackageInfo": false,
-    "python.defaultInterpreterPath": "python3",
     "python.experiments.enabled": false,
-    "python.pythonPath": "python3",
     "python.showStartPage": false,
     "rust.clippy_preference": "on",
     "security.workspace.trust.banner": "never",

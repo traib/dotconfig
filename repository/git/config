@@ -4,18 +4,19 @@
 	email = traib@users.noreply.github.com
 [alias]
 	ad = add --patch
-	ca = commit --amend --verbose
 	cm = commit --verbose
+	cma = commit --amend --verbose
 	df = diff
+	dfh = diff HEAD
 	lg = log
-	lgf = lg --pretty=fuller
-	lgr = lg --pretty=reference
+	lgf = log --pretty=fuller
+	lgr = log --pretty=reference
 	rb = rebase
-	rbi = rb --interactive
-	rba = rb --abort
-	rbc = rb --continue
+	rbi = rebase --interactive
+	rba = rebase --abort
+	rbc = rebase --continue
 	rs = restore --patch
-	rss = rs --staged
+	rss = restore --patch --staged
 	st = status
 [color]
 	ui = auto

@@ -1,10 +1,4 @@
 emulate sh -c "source ${HOME}/.profile"
 
-# https://docs.brew.sh/Shell-Completion
-if type brew &>/dev/null
-then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-fi
-
 # No apt-specific short aliases, e.g. ag, agi, ati etc.
 GRML_NO_APT_ALIASES=1

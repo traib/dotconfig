@@ -13,15 +13,11 @@ import sys
 import tempfile
 
 assert sys.version_info >= (3, 9)
-assert __name__ == '__main__'
+assert __name__ == "__main__"
 
 
-def as_categories(
-    names: tuple[str], default=tuple(Category)
-) -> tuple[Category]:
-    return default if not names else tuple(
-        Category[name.upper()] for name in names
-    )
+def as_categories(names: tuple[str], default=tuple(Category)) -> tuple[Category]:
+    return default if not names else tuple(Category[name.upper()] for name in names)
 
 
 def topological_sort(names: tuple[str]) -> tuple[Category]:
@@ -34,7 +30,8 @@ def topological_sort(names: tuple[str]) -> tuple[Category]:
         visited.add(category)
         sorter.add(category, *prerequisites)
         to_visit.extend(
-            prerequisite for prerequisite in prerequisites
+            prerequisite
+            for prerequisite in prerequisites
             if prerequisite not in visited
         )
     return sorter.static_order()
@@ -53,15 +50,15 @@ def mkparents(path: pathlib.Path):
 
 
 def symlink_force(src: pathlib.Path, dst: pathlib.Path):
-    with tempfile.TemporaryDirectory(dir=REPOSITORY.joinpath('tmp')) as tmp_dir:
-        tmp_symlink = pathlib.Path(tmp_dir).joinpath('symlink')
+    with tempfile.TemporaryDirectory(dir=REPOSITORY.joinpath("tmp")) as tmp_dir:
+        tmp_symlink = pathlib.Path(tmp_dir).joinpath("symlink")
         tmp_symlink.symlink_to(src)
         tmp_symlink.replace(dst)
 
 
 def cp_force(src: pathlib.Path, dst: pathlib.Path):
-    with tempfile.TemporaryDirectory(dir=REPOSITORY.joinpath('tmp')) as tmp_dir:
-        tmp_cp = pathlib.Path(tmp_dir).joinpath('cp')
+    with tempfile.TemporaryDirectory(dir=REPOSITORY.joinpath("tmp")) as tmp_dir:
+        tmp_cp = pathlib.Path(tmp_dir).joinpath("cp")
         shutil.copyfile(src, tmp_cp, follow_symlinks=False)
         tmp_cp.replace(dst)
 
@@ -71,27 +68,23 @@ def install(args):
         if category.is_disabled():
             continue
         print()
-        print('=' * len(str(category)))
+        print("=" * len(str(category)))
         print(category)
-        print('=' * len(str(category)))
+        print("=" * len(str(category)))
 
         for command in category.before_install:
             command = command.on_current_platform()
             print()
-            print(f'run{command}')
+            print(f"run{command}")
 
             if args.dry_run:
                 continue
 
-            print(
-                subprocess.check_output(
-                    command, stderr=subprocess.STDOUT, text=True
-                )
-            )
+            print(subprocess.check_output(command, stderr=subprocess.STDOUT, text=True))
 
         for location in category.locations:
             operation = symlink_force if not args.cp else cp_force
-            operation_name = 'symlink' if not args.cp else 'cp'
+            operation_name = "symlink" if not args.cp else "cp"
 
             src = location.inside_repository()
             dst = location.outside_repository()
@@ -111,9 +104,7 @@ def install(args):
                     for filename in filenames:
                         dir = pathlib.PurePath(dirpath)
                         rel = dir.relative_to(src).joinpath(filename)
-                        operation_paths.append(
-                            (src.joinpath(rel), dst.joinpath(rel))
-                        )
+                        operation_paths.append((src.joinpath(rel), dst.joinpath(rel)))
 
             for src_path, dst_path in operation_paths:
                 print()
@@ -128,16 +119,12 @@ def install(args):
         for command in category.after_install:
             command = command.on_current_platform()
             print()
-            print(f'run{command}')
+            print(f"run{command}")
 
             if args.dry_run:
                 continue
 
-            print(
-                subprocess.check_output(
-                    command, stderr=subprocess.STDOUT, text=True
-                )
-            )
+            print(subprocess.check_output(command, stderr=subprocess.STDOUT, text=True))
 
 
 def diff(args):
@@ -145,9 +132,9 @@ def diff(args):
         if category.is_disabled():
             continue
         print()
-        print('=' * len(str(category)))
+        print("=" * len(str(category)))
         print(category)
-        print('=' * len(str(category)))
+        print("=" * len(str(category)))
 
         for location in category.locations:
             src = location.inside_repository()
@@ -168,9 +155,7 @@ def diff(args):
                     for filename in filenames:
                         dir = pathlib.PurePath(dirpath)
                         rel = dir.relative_to(src).joinpath(filename)
-                        diff_paths.append(
-                            (src.joinpath(rel), dst.joinpath(rel))
-                        )
+                        diff_paths.append((src.joinpath(rel), dst.joinpath(rel)))
 
             for src_path, dst_path in diff_paths:
                 with open_or_empty(src_path) as src_file:
@@ -181,35 +166,35 @@ def diff(args):
                                 dst_file.readlines(),
                                 fromfile=str(src_path),
                                 tofile=str(dst_path),
-                                n=0
+                                n=0,
                             )
                         )
                         if deltas:
                             print()
-                            print(''.join(deltas))
+                            print("".join(deltas))
 
 
 parser = argparse.ArgumentParser()
-subparsers = parser.add_subparsers(dest='subcommand', required=True)
+subparsers = parser.add_subparsers(dest="subcommand", required=True)
 
-installparser = subparsers.add_parser('install')
+installparser = subparsers.add_parser("install")
 installparser.set_defaults(handler=install)
-installparser.add_argument('--dry-run', action='store_true')
-installparser.add_argument('--cp', action='store_true')
+installparser.add_argument("--dry-run", action="store_true")
+installparser.add_argument("--cp", action="store_true")
 installparser.add_argument(
-    'categories',
-    nargs='*',
-    choices=[''] + [category.name.lower() for category in Category],
-    default=''
+    "categories",
+    nargs="*",
+    choices=[""] + [category.name.lower() for category in Category],
+    default="",
 )
 
-diffparser = subparsers.add_parser('diff')
+diffparser = subparsers.add_parser("diff")
 diffparser.set_defaults(handler=diff)
 diffparser.add_argument(
-    'categories',
-    nargs='*',
-    choices=[''] + [category.name.lower() for category in Category],
-    default=''
+    "categories",
+    nargs="*",
+    choices=[""] + [category.name.lower() for category in Category],
+    default="",
 )
 
 args = parser.parse_args()
