@@ -76,6 +76,8 @@ class Category(CategoryDescription, enum.Enum):
     BREW = CategoryDescription(
         locations=(
             # https://docs.brew.sh/Manpage#bundle-subcommand
+            # brew update && brew upgrade --greedy && brew autoremove && brew cleanup
+            # brew bundle dump --global --force
             Location(
                 repo="brew/Brewfile",
                 linux="$HOME/.Brewfile",

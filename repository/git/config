@@ -8,8 +8,8 @@
 	cma = commit --amend --verbose
 	df = diff
 	dfh = diff HEAD
-	lg = log
-	lgf = log --pretty=fuller
+	lg = log --shortstat
+	lgf = log --shortstat --pretty=fuller
 	lgr = log --pretty=reference
 	rb = rebase
 	rbi = rebase --interactive

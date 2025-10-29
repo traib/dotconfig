@@ -7,16 +7,29 @@ then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# Flyway
+if [ -x '/opt/homebrew/bin/flyway' ]
+then
+  export REDGATE_DISABLE_TELEMETRY=1
+fi
+
+# Go
+if [ -x '/opt/homebrew/bin/go' ]
+then
+  export GOPATH="${HOME}/.go"
+  export PATH="${GOPATH}/bin:${PATH}"
+fi
+
 # Python
 if [ -x '/opt/homebrew/bin/python3' ]
 then
-  export PATH="$(brew --prefix python)/libexec/bin:$PATH"
+  export PATH="$(brew --prefix python)/libexec/bin:${PATH}"
 fi
 
 # Rustup
 if [ -x '/opt/homebrew/opt/rustup/bin/rustup-init' ]
 then
-  export PATH="/opt/homebrew/opt/rustup/bin:$PATH"
+  export PATH="/opt/homebrew/opt/rustup/bin:${PATH}"
 fi
 
 # Use VSCode as the default text editor, except for sudoedit
