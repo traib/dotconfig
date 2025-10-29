@@ -1,5 +1,15 @@
 {
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "chat.agent.enabled": false,
     "chat.commandCenter.enabled": false,
+    "chat.disableAIFeatures": true,
     "diffEditor.diffAlgorithm": "advanced",
     "diffEditor.experimental.showMoves": true,
     "diffEditor.hideUnchangedRegions.enabled": true,
@@ -27,6 +37,11 @@
     "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
     "java.recommendations.dependency.analytics.show": false,
     "json.schemaDownload.enable": false,
+    "notebook.formatOnSave.enabled": true,
+    "notebook.codeActionsOnSave": {
+        "notebook.source.fixAll": "explicit",
+        "notebook.source.organizeImports": "explicit"
+    },
     "npm.fetchOnlinePackageInfo": false,
     "python.experiments.enabled": false,
     "python.showStartPage": false,
@@ -74,6 +89,7 @@
     "vim.visualstar": true,
     "vim.wrapscan": false,
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "window.restoreWindows": "folders",
     "workbench.editor.enablePreview": false,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.wrapTabs": true,
@@ -82,6 +98,7 @@
     },
     "workbench.enableExperiments": false,
     "workbench.settings.enableNaturalLanguageSearch": false,
+    "workbench.settings.showAISearchToggle": false,
     "workbench.sideBar.location": "right",
     "workbench.startupEditor": "none",
 }

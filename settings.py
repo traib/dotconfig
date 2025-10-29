@@ -1,5 +1,3 @@
-from repository import REPOSITORY, Category
-
 import argparse
 import contextlib
 import difflib
@@ -11,6 +9,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+
+from repository import REPOSITORY, Category
 
 assert sys.version_info >= (3, 9)
 assert __name__ == "__main__"
