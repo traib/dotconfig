@@ -1,0 +1,26 @@
+" https://github.com/JetBrains/ideavim
+source ~/.vimrc
+
+" https://github.com/JetBrains/ideavim/wiki/set-commands
+set clipboard=ideaput
+set hlsearch
+set ignorecase
+set incsearch
+set showcmd
+set showmode
+set smartcase
+set visualbell
+set nowrapscan
+
+set ideajoin
+
+" https://github.com/JetBrains/ideavim/wiki/IdeaVim-Plugins
+Plug 'vim-scripts/argtextobj.vim'
+let g:argtextobj_pairs="(:),{:},<:>"
+
+Plug 'machakann/vim-highlightedyank'
+let g:highlightedyank_highlight_duration="-1"
+
+set mini-ai
+
+Plug 'justinmk/vim-sneak'
