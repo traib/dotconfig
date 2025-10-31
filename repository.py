@@ -116,6 +116,31 @@ class Category(CategoryDescription, enum.Enum):
         ),
     )
 
+    VIM = CategoryDescription(
+        before_install=(
+            Command(
+                "curl",
+                "--silent",
+                "--show-error",
+                "https://raw.githubusercontent.com/vim/vim/refs/heads/master/runtime/defaults.vim",
+                "--output",
+                REPOSITORY.joinpath("vim/vimrc"),
+            ),
+        ),
+        locations=(
+            Location(
+                repo="vim/vimrc",
+                linux="$HOME/.vimrc",
+                darwin="$HOME/.vimrc",
+            ),
+            Location(
+                repo="vim/ideavimrc",
+                linux="$HOME/.ideavimrc",
+                darwin="$HOME/.ideavimrc",
+            ),
+        ),
+    )
+
     VSCODE = CategoryDescription(
         locations=(
             # https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
