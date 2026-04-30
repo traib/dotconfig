@@ -20,6 +20,12 @@ then
   export PATH="${GOPATH}/bin:${PATH}"
 fi
 
+# Make
+if [ -x '/opt/homebrew/bin/gmake' ]
+then
+  export PATH="/opt/homebrew/opt/make/libexec/gnubin:${PATH}"
+fi
+
 # Python
 if [ -x '/opt/homebrew/bin/python3' ]
 then

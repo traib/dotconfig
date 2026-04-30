@@ -6,21 +6,40 @@ set clipboard=ideaput
 set hlsearch
 set ignorecase
 set incsearch
+set selectmode=ideaselection
 set showcmd
 set showmode
 set smartcase
+set nostartofline
+set notimeout
 set visualbell
 set nowrapscan
 
 set ideajoin
+set idearefactormode=keep
 
 " https://github.com/JetBrains/ideavim/wiki/IdeaVim-Plugins
 Plug 'vim-scripts/argtextobj.vim'
-let g:argtextobj_pairs="(:),{:},<:>"
+let g:argtextobj_pairs="(:),[:],{:},<:>"
+
+Plug 'tpope/vim-commentary'
+
+Plug 'tommcdo/vim-exchange'
 
 Plug 'machakann/vim-highlightedyank'
-let g:highlightedyank_highlight_duration="-1"
+
+Plug 'michaeljsmith/vim-indent-object'
 
 set mini-ai
 
-Plug 'justinmk/vim-sneak'
+Plug 'dbakker/vim-paragraph-motion'
+
+Plug 'vim-scripts/ReplaceWithRegister'
+
+Plug 'tpope/vim-surround'
+
+Plug 'kana/vim-textobj-entire'
+
+" https://github.com/JetBrains/ideavim?tab=readme-ov-file#executing-ide-actions
+map <Space> <Leader>
+map <Leader>d <Action>(Compare.SameVersion)

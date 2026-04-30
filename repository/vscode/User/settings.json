@@ -50,6 +50,7 @@
     "security.workspace.trust.emptyWindow": false,
     "security.workspace.trust.startupPrompt": "never",
     "security.workspace.trust.untrustedFiles": "newWindow",
+    "task.allowAutomaticTasks": "off",
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
     "telemetry.telemetryLevel": "off",
@@ -97,6 +98,7 @@
         "*.ipynb": "jupyter-notebook"
     },
     "workbench.enableExperiments": false,
+    "workbench.remoteIndicator.showExtensionRecommendations": false,
     "workbench.settings.enableNaturalLanguageSearch": false,
     "workbench.settings.showAISearchToggle": false,
     "workbench.sideBar.location": "right",

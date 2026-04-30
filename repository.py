@@ -80,9 +80,7 @@ class Category(CategoryDescription, enum.Enum):
             # brew bundle dump --global --force
             Location(
                 repo="brew/Brewfile",
-                linux="$HOME/.Brewfile",
                 darwin="$HOME/.Brewfile",
-                windows="$HOME/.Brewfile",
             ),
         ),
         after_install=(Command("brew", "bundle", "upgrade", "--global"),),
