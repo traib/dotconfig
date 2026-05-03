@@ -97,6 +97,16 @@ class Category(CategoryDescription, enum.Enum):
         ),
     )
 
+    REDHAT = CategoryDescription(
+        locations=(
+            Location(
+                repo="redhat/io.quarkus.analytics.localconfig",
+                linux="$HOME/.redhat/io.quarkus.analytics.localconfig",
+                darwin="$HOME/.redhat/io.quarkus.analytics.localconfig",
+            ),
+        ),
+    )
+
     SH = CategoryDescription(
         locations=(
             Location(

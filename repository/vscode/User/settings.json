@@ -8,7 +8,12 @@
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
     "chat.agent.enabled": false,
+    "chat.agent.networkFilter": true,
+    "chat.agent.sandbox.enabled": "on",
     "chat.commandCenter.enabled": false,
+    "chat.extensionTools.enabled": false,
+    "chat.mcp.access": "none",
+    "chat.mcp.apps.enabled": false,
     "chat.disableAIFeatures": true,
     "diffEditor.diffAlgorithm": "advanced",
     "diffEditor.experimental.showMoves": true,
